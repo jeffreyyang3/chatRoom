@@ -8,21 +8,80 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
 
     <style>
+
+    html, body{
+        height: 100%;
+    }
+    #chat{
+        height: 100%;
+    }
+    #chatInput{
+        
+        
+        width:100%
+    }
+    #chatArea{
+      
+    }
+    
+
         
     #enterName{
         float: left;
         clear: both;
+
     }
-    #chat-log{
-        display: block;
-        float: left;
-        clear: both
+
+    #chat-message-input{
+        position: relative;
+        padding: 10px 20px;
+        background: #E5E5EA;
+        border-radius: 25px;
+        border: 1px solid grey;
+        width: 70%;
+        
+
+        
+        background: #fefefe;
+        
     }
-    #chatInput{
-        display: block;
-        float: left;
-        clear: both
+    #chat-message-input:focus{
+        outline: none;
     }
+    .messages{
+        margin-left: 20px
+    }
+    #chatMessages{
+        height:70vh; 
+        
+     
+        overflow-y: scroll;
+        border: 1px solid grey;
+        border-radius: 25px;
+        position: relative;
+        margin-bottom: 15px;
+
+    }
+    #chat-message-submit{
+        outline: none;
+        border: none;
+        margin-left: 10px;
+
+        font-family: 'Helvetica', sans-serif;
+        font-size: 12px;
+        font-weight: 400;
+        position: relative;
+        float: right;
+
+        padding: 10px;
+        background-color: #29B6F6;
+        color: #fff;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+    
+
+    
     
     
     </style>
@@ -30,19 +89,21 @@
 <body>
     
     <div id="chat">
-            <ul id="example-1">
-                    <li v-for="message in messages">
-                        {(message.username)}:
-                        {( message.message )}
-                    </li>
-                  </ul>
+            
 
         
 
-        <div id="chatArea" v-show="showChat">       
-            <textarea id="chat-log" cols="100" rows="20"></textarea><br/>
+        <div id="chatArea" v-show="showChat">   
+            <h1> HOT MESSAGING APP</h1>  
+            <div id="chatMessages">
+                <p class ="messages" v-for="message in messages">
+                   {( message.username )}:
+                    {( message.message )} 
+                </p>
+            </div>  
+         
             <div id="chatInput">
-                    <input id="chat-message-input" type="text" size="100"/><br/>
+                    <input id="chat-message-input" type="text" size="100"/>
                     <input id="chat-message-submit" type="button" value="Send"/>
             </div>
         </div>
@@ -122,7 +183,7 @@
             message: data['message']
         }
         chatLogic.addMessage(messageObject)
-        document.querySelector('#chat-log').value += (messageObject.message + '\n');
+        
     };
 
     chatSocket.onclose = function(e) {
