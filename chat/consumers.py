@@ -26,16 +26,30 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				text_data_json = json.loads(text_data)
 				message = text_data_json['message']
 				username = text_data_json['username']
+				userID = text_data_json['userID']
 				isAnonymous = text_data_json['isAnonymous']
-
+				isInstructor = text_data_json['isInstructor']
+				print(self.channel_name)
 				# Send message to room group
 				await self.channel_layer.group_send(
 						self.room_group_name,{
 								'type': 'chat_message',
 								'message': message,
 								'username': username,
-								'isAnonymous': isAnonymous
+								'isAnonymous': isAnonymous,
+								'isInstructor': isInstructor,
+								'userID': userID
 						})
+				await self.channel_layer.send(self.channel_name, {
+								'type': 'chat_message',
+								'message': "XXXXXTRA",
+								'username': username,
+								'isAnonymous': isAnonymous,
+								'isInstructor': isInstructor,
+								'userID': userID
+				})
+
+				
 		async def chat_message(self, event):
 				message = event['message']
 				username = event['username']

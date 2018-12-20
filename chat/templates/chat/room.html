@@ -13,7 +13,9 @@
 
     html, body{
         height: 100%;
+        
     }
+
     #chat{
         height: 90%;
         width: 90%;
@@ -23,10 +25,7 @@
         
         width:100%
     }
-    #chatArea{
-      
-    }
-    
+
 
         
     #enterName{
@@ -92,7 +91,7 @@
         border-radius: 25px 25px 2px 25px;
         color: white;
         font-size: 13px;
-        margin-bottom: -1%;
+        margin-bottom: 1px;
         
     }
     .otherMessage{
@@ -107,7 +106,7 @@
         border-radius: 25px 25px 25px 6px;
         color: white;
         font-size: 13px;
-        margin-bottom: -1%;
+        margin-bottom: 1px;
     }
 
 
@@ -149,7 +148,7 @@
 
     var chatLogic = new Vue({
         el: "#chat",
-        delimiters: ['{(', ')}'],
+        delimiters: ['{(', ')}'],         //avoid conflicts with django templating syntax          
 
         data: {
             placeholder: 1,
@@ -174,22 +173,16 @@
                 chatLogic.username = name 
                 chatLogic.isAnonymous = anonymous
                 chatLogic.showChat = true
+                let min = 0; 
+                let max = 9999999;  
+                let randomInt = Math.floor(Math.random() * (+max - +min)) + +min; 
+                chatLogic.userID = randomInt
+
                 
             }
         }
 
     })
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -203,13 +196,13 @@
 
 	chatSocket.onmessage = (e) => {
         var data = JSON.parse(e.data);
-        console.log(data)
+        // console.log(data)
         // var message = data['message'];
         let messageObject = {
             anonymous: data['anonymous'],
             username: data['username'] + ": ",
             message: data['message'],
-            isMine: data['username'] == chatLogic.username,
+            isMine: data['userID'] == chatLogic.userID,
         }
         if(messageObject.isMine){
             messageObject.username = ""
@@ -223,12 +216,12 @@
     };
 
     document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = function(e) {
+    document.querySelector('#chat-message-input').onkeyup = e => {
         if (e.keyCode === 13) {  // enter, return
             document.querySelector('#chat-message-submit').click();
         }
     };
-    document.querySelector('#userName').onkeyup = function(e) {
+    document.querySelector('#userName').onkeyup = e => {
         if (e.keyCode === 13) {  // enter, return
             var username = document.getElementById("userName").value
             var instructor = document.getElementById("instructor").checked
@@ -238,14 +231,16 @@
         }
     };
 
-    document.querySelector('#chat-message-submit').onclick = function(e) {
+    document.querySelector('#chat-message-submit').onclick = e => {
         var messageInputDom = document.querySelector('#chat-message-input');
         var message = messageInputDom.value;
 
         chatSocket.send(JSON.stringify({
             'username': chatLogic.username,
             'message': message,
-            'isAnonymous': chatLogic.isAnonymous
+            'isAnonymous': chatLogic.isAnonymous,
+            'isInstructor': chatLogic.isInstructor,
+            'userID': chatLogic.userID
         }));
 
         messageInputDom.value = '';
