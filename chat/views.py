@@ -7,8 +7,11 @@ def index(request):
     return render(request, 'chat/index.html', {})
 
 def room(request, roomName):
+
     return render(request, 'chat/room.html', {
-        'room_name_json': mark_safe(json.dumps(roomName))
+        'room_name_json': mark_safe(json.dumps(roomName)),
+        'stripped': mark_safe(json.dumps(roomName)).strip('\"')
+        
     })
 
 def login(request):

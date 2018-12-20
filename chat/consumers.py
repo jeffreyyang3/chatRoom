@@ -27,8 +27,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				message = text_data_json['message']
 				username = text_data_json['username']
 				userID = text_data_json['userID']
+		
 				isAnonymous = text_data_json['isAnonymous']
 				isInstructor = text_data_json['isInstructor']
+
+				if isInstructor:
+					text_data_json['instructorChannel'] = self.channel_name
+				
+
 				print(self.channel_name)
 				# Send message to room group
 				await self.channel_layer.group_send(
@@ -38,25 +44,34 @@ class ChatConsumer(AsyncWebsocketConsumer):
 								'username': username,
 								'isAnonymous': isAnonymous,
 								'isInstructor': isInstructor,
-								'userID': userID
+								'userID': userID,
+								'instructorChannel': text_data_json.get("instructorChannel")
 						})
-				await self.channel_layer.send(self.channel_name, {
-								'type': 'chat_message',
-								'message': "XXXXXTRA",
-								'username': username,
-								'isAnonymous': isAnonymous,
-								'isInstructor': isInstructor,
-								'userID': userID
-				})
+				if(text_data_json.get("instructorChannel")):
+					await self.channel_layer.send(text_data_json.get("instructorChannel"), {
+									'type': 'chat_message',
+									'message': "XXXXXTRA",
+									'username': username,
+									'isAnonymous': isAnonymous,
+									'isInstructor': isInstructor,
+									'userID': userID,
+									'instructorChannel': text_data_json['instructorChannel']
+									
+					})
 
 				
 		async def chat_message(self, event):
 				message = event['message']
 				username = event['username']
 				isAnonymous = event['isAnonymous']
+				instructorChannel = event['instructorChannel']
+				userID = event['userID']
 
 				await self.send(text_data=json.dumps({
 						'message': message,
 						'username': username,
-						'isAnonymous': isAnonymous
+						'isAnonymous': isAnonymous,
+						'instructorChannel': instructorChannel,
+						'userID': userID
 				}))
+

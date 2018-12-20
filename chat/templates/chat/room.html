@@ -115,10 +115,11 @@
 <body>
     
     <div id="chat">
+        <input type="hidden" id="instructorChannel" value="notIt">
   
 
         <div id="chatArea" v-show="showChat">   
-            <h1> HOT MESSAGING APP</h1>  
+            <h1> {{stripped}} chat room</h1>  
             <div id="chatMessages">
                 <p v-for="message in messages" 
                 v-bind:class="{ 'myMessage': message.isMine, 'otherMessage': !message.isMine }">
@@ -156,7 +157,10 @@
             messages: [],
             isInstructor: false,
             isAnonymous: true,
-            username: "theres a problem"
+            username: "theres a problem",
+            userID: -9999,
+            instructorChannel: "notIt"
+
 
         },
 
@@ -175,8 +179,7 @@
                 chatLogic.showChat = true
                 let min = 0; 
                 let max = 9999999;  
-                let randomInt = Math.floor(Math.random() * (+max - +min)) + +min; 
-                chatLogic.userID = randomInt
+                chatLogic.userID = Math.floor(Math.random() * (+max - +min)) + +min; 
 
                 
             }
@@ -194,6 +197,8 @@
         'ws://' + window.location.host +
         '/ws/chat/' + roomName + '/');
 
+    var instructorChannel = document.getElementById("instructorChannel")
+
 	chatSocket.onmessage = (e) => {
         var data = JSON.parse(e.data);
         // console.log(data)
@@ -204,14 +209,22 @@
             message: data['message'],
             isMine: data['userID'] == chatLogic.userID,
         }
+        console.log("received  " + data['userID'])
+        console.log("current  " + chatLogic.userID)
         if(messageObject.isMine){
             messageObject.username = ""
         }
+        if(data.instructorChannel){
+            chatLogic.instructorChannel = data.instructorChannel
+        }
+
+
+        
         chatLogic.addMessage(messageObject)
         
     };
 
-    chatSocket.onclose = function(e) {
+    chatSocket.onclose = e => {
         console.error('Chat socket closed unexpectedly');
     };
 
@@ -240,7 +253,8 @@
             'message': message,
             'isAnonymous': chatLogic.isAnonymous,
             'isInstructor': chatLogic.isInstructor,
-            'userID': chatLogic.userID
+            'userID': chatLogic.userID,
+            'instructorChannel': chatLogic.instructorChannel
         }));
 
         messageInputDom.value = '';
