@@ -1,11 +1,15 @@
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
+from urllib.parse import quote
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
 		async def connect(self):
 				self.room_name = self.scope['url_route']['kwargs']['room_name']
+
 				self.room_group_name = 'chat_%s' % self.room_name
+
 				
 				await self.channel_layer.group_add(
 						self.room_group_name,
@@ -30,14 +34,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		
 				isAnonymous = text_data_json['isAnonymous']
 				isInstructor = text_data_json['isInstructor']
+				invisible = text_data_json['invisible']
 
 				if isInstructor:
 					text_data_json['instructorChannel'] = self.channel_name
 				
 
-				print(self.channel_name)
+				
 				# Send message to room group
-				if(text_data_json.get("instructorChannel")):
+				instructorChannel = text_data_json.get("instructorChannel")
+				if(instructorChannel and instructorChannel != "notIt"):
 					await self.channel_layer.send(text_data_json.get("instructorChannel"), {
 						'type': 'chat_message',
 						'message': message,
@@ -46,7 +52,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 						'isInstructor': isInstructor,
 						'userID': userID,
 						'instructorChannel': text_data_json['instructorChannel'],
-						'forInstructor': True
+						'forInstructor': True,
+						'invisible': invisible,
 					})
 
 				if(isAnonymous):
@@ -61,7 +68,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 							'isInstructor': isInstructor,
 							'userID': userID,
 							'instructorChannel': text_data_json.get("instructorChannel"),
-							'forInstructor': False
+							'forInstructor': False,
+							'invisible': invisible
 						})
 				
 
@@ -73,6 +81,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				instructorChannel = event['instructorChannel']
 				userID = event['userID']
 				forInstructor = event['forInstructor']
+				invisible = event['invisible']
 
 				await self.send(text_data=json.dumps({
 						'message': message,
@@ -80,6 +89,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 						'isAnonymous': isAnonymous,
 						'instructorChannel': instructorChannel,
 						'userID': userID,
-						'forInstructor': forInstructor
+						'forInstructor': forInstructor,
+						'invisible': invisible,
 				}))
 

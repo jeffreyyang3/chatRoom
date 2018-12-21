@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>{{stripped}}</title>
+    <title>{{strippedName}}</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
 <!--
     STYLESHEET
@@ -132,7 +132,7 @@
   
 
         <div id="chatArea" v-show="showChat">   
-            <h2> Class {{stripped}} | 
+            <h2> Chat Room {{strippedName}} | 
                 <span v-if="isInstructor"> You are the instructor.</span>
                 <span v-else-if="isAnonymous"> Chatting as anonymous to students.</span>
                 <span v-else> Chatting as {( username )}</span>
@@ -154,7 +154,7 @@
             </div>
         </div>
         <div id="register" v-show="!showChat">
-                <h2> Welcome to class {{stripped}}</h2>
+                <h2> Welcome to class {{strippedName}}</h2>
                 <h3> What's your name?</h3>
                 <input class="registrationButton" 
                 id="userName" type="text" maxlength="20"
@@ -194,6 +194,7 @@
 <script>
     var roomName = {{ room_name_json }}
 
+
     var chatLogic = new Vue({
         el: "#chat",
         delimiters: ['{(', ')}'],         //avoid conflicts with django template syntax          
@@ -232,21 +233,50 @@
                 chatLogic.startWebSocket(instructor)
             },
 
-            startWebSocket: instructor => {
-                var chatSocket = new WebSocket(
+            
+
+            startWebSocket: instructor => {     //ROW ECHELON FORM       
+    
+                var chatSocket = new WebSocket(             
                     'ws://' + window.location.host +
-                    '/ws/chat/' + roomName + '/');
-                    chatSocket.onopen = function (event) {
+                    '/ws/chat/' + roomName.replace(/\s+/g, '') + '/');    
+                    //          regex that removes spaces  ^^, could probably find a better pattern
+                                                                // that works with other bad chars
+                    chatSocket.onopen = instructor => {
                         if(instructor){
+                            window.setInterval(
+                                ()=>{
+
+                                    chatSocket.send(JSON.stringify({
+                                        'username': chatLogic.username,
+                                        'message': "this should be invisible",
+                                        'isAnonymous': chatLogic.isAnonymous,
+                                        'isInstructor': chatLogic.isInstructor,
+                                        'userID': chatLogic.userID,
+                                        'invisible': true,
+                                    }));
+                                }, 150)
+                            
+                        }
+
+
+
+
+
+
+
+
+                    /*  if(instructor){
                             chatSocket.send(JSON.stringify({
                                 'username': chatLogic.username,
-                                'message': "Hi, I'm the instructor.",
+                                'message': "this should be invisible",
                                 'isAnonymous': chatLogic.isAnonymous,
                                 'isInstructor': chatLogic.isInstructor,
                                 'userID': chatLogic.userID,
+                                'invisible': true,
                             }));
 
-                        }
+                        } */
                         document.querySelector('#chat-message-input').onkeyup = e => {
                             if (e.keyCode === 13) {  // enter, return
                                 document.querySelector('#chat-message-submit').click();
@@ -262,7 +292,8 @@
                                 'isAnonymous': chatLogic.isAnonymous,
                                 'isInstructor': chatLogic.isInstructor,
                                 'userID': chatLogic.userID,
-                                'instructorChannel': chatLogic.instructorChannel
+                                'instructorChannel': chatLogic.instructorChannel,
+                                'invisible': false,
                             }));
                             messageInputDom.value = '';
                         };
@@ -279,6 +310,7 @@
                         username: data['username'] + ": ",
                         message: data['message'],
                         isMine: data['userID'] == chatLogic.userID,
+                        invisible: data['invisible']
                     }
 
                     if(messageObject.isMine){
@@ -289,12 +321,16 @@
                         chatLogic.instructorChannel = data.instructorChannel
                     }
 
-                    if(data['forInstructor']){
-                        chatLogic.addMessage(messageObject)
+                    if(!messageObject.invisible){
+                        if(data['forInstructor']){
+                            chatLogic.addMessage(messageObject)
+                        }
+                        else if(!chatLogic.isInstructor){
+                            chatLogic.addMessage(messageObject)
+                        }
                     }
-                    else if(!chatLogic.isInstructor){
-                        chatLogic.addMessage(messageObject)
-                    }
+
+                    
                     
                 };
 
