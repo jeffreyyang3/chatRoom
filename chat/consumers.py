@@ -37,27 +37,33 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 				print(self.channel_name)
 				# Send message to room group
-				await self.channel_layer.group_send(
-						self.room_group_name,{
-								'type': 'chat_message',
-								'message': message,
-								'username': username,
-								'isAnonymous': isAnonymous,
-								'isInstructor': isInstructor,
-								'userID': userID,
-								'instructorChannel': text_data_json.get("instructorChannel")
-						})
 				if(text_data_json.get("instructorChannel")):
 					await self.channel_layer.send(text_data_json.get("instructorChannel"), {
-									'type': 'chat_message',
-									'message': "XXXXXTRA",
-									'username': username,
-									'isAnonymous': isAnonymous,
-									'isInstructor': isInstructor,
-									'userID': userID,
-									'instructorChannel': text_data_json['instructorChannel']
-									
+						'type': 'chat_message',
+						'message': message,
+						'username': username,
+						'isAnonymous': isAnonymous,
+						'isInstructor': isInstructor,
+						'userID': userID,
+						'instructorChannel': text_data_json['instructorChannel'],
+						'forInstructor': True
 					})
+
+				if(isAnonymous):
+					username = "Anonymous"
+				
+				await self.channel_layer.group_send(
+						self.room_group_name,{
+							'type': 'chat_message',
+							'message': message,
+							'username': username,
+							'isAnonymous': isAnonymous,
+							'isInstructor': isInstructor,
+							'userID': userID,
+							'instructorChannel': text_data_json.get("instructorChannel"),
+							'forInstructor': False
+						})
+				
 
 				
 		async def chat_message(self, event):
@@ -66,12 +72,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				isAnonymous = event['isAnonymous']
 				instructorChannel = event['instructorChannel']
 				userID = event['userID']
+				forInstructor = event['forInstructor']
 
 				await self.send(text_data=json.dumps({
 						'message': message,
 						'username': username,
 						'isAnonymous': isAnonymous,
 						'instructorChannel': instructorChannel,
-						'userID': userID
+						'userID': userID,
+						'forInstructor': forInstructor
 				}))
 

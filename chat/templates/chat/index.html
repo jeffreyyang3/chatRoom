@@ -4,12 +4,40 @@
 <head>
     <meta charset="utf-8"/>
     <title>Chat Rooms</title>
+    <style>
+        body{
+            font-family: Helvetica, sans-serif
+        }
+        .registrationButton{
+            border-radius:25px;
+            border:1px solid grey;
+
+            background:#fefefe;
+            padding:10px 20px;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .registrationButton:focus{
+            outline: none;
+        }
+    
+    
+    
+    
+    
+    
+    
+    </style>
 </head>
 <body>
-    <input name="userName" type="text"> <br>
-    What chat room would you like to enter?<br/>
-    <input id="room-name-input" type="text" size="100"/><br/>
-    <input id="room-name-submit" type="button" value="Enter"/>
+   
+    <h2>What class would you like to enter? </h2>
+        
+        
+    
+    <input id="room-name-input" type="text" size="20" class="registrationButton"/>
+    <input id="room-name-submit" type="button" value="Enter" class="registrationButton"/>
     
 
     <script>

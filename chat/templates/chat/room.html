@@ -4,110 +4,123 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Chat Room</title>
+    <title>{{stripped}}</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.21/dist/vue.js"></script>
 <!--
     STYLESHEET
 -->
     <style> 
 
-    html, body{
-        height: 100%;
+        html,body {
+            height:100%;
+            font-family:Helvetica, sans-serif;
+        }
+
+        #chat {
+            height:90%;
+            width:90%;
+        }
+        #register{
+
+        }
+
+        #chatInput {
+            width:100%;
+            font-size: 13px;
+        }
+
+        #enterName {
+            float:left;
+            clear:both;
+        }
+
+        #chat-message-input {
+            position:relative;
+            border-radius:25px;
+            border:1px solid grey;
+            width:70%;
+            background:#fefefe;
+            padding:10px 20px;
+        }
+
+        #chat-message-input:focus {
+            outline:none;
+        }
         
-    }
 
-    #chat{
-        height: 90%;
-        width: 90%;
-    }
-    #chatInput{
+        #chatMessages {
+            height:70vh;
+            overflow-y:scroll;
+            border:1px solid grey;
+            border-radius:25px;
+            position:relative;
+            margin-bottom:15px;
+        }
+
+        #chat-message-submit {
+            outline:none;
+            border:none;
+            margin-left:10px;
+            font-family:Helvetica, sans-serif;
+            font-size:12px;
+            font-weight:400;
+            position:relative;
+            float:right;
+            background-color:#0076FF;
+            color:#fff;
+            border-radius:25px;
+            cursor:pointer;
+            padding:10px;
+        }
+        .registrationButton{
+            border-radius:25px;
+            border:1px solid grey;
+
+            background:#fefefe;
+            padding:10px 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .registrationButton:focus {
+            outline:none;
+        }
+
         
-        
-        width:100%
-    }
 
+        .myMessage {
+            word-wrap:break-word;
+            max-width:30%;
+            float:right;
+            clear:both;
+            margin-right:2%;
+            background-color:#0076FF;
+            font-family:Helvetica, sans-serif;
+            border-radius:25px 25px 2px 25px;
+            color:#FFF;
+            font-size:13px;
+            margin-bottom:1px;
+            padding:13px;
+        }
 
-        
-    #enterName{
-        float: left;
-        clear: both;
+        .otherMessage {
+            word-wrap:break-word;
+            max-width:30%;
+            float:left;
+            clear:both;
+            margin-left:2%;
+            background-color:#65737e;
+            font-family:Helvetica, sans-serif;
+            border-radius:25px 25px 25px 6px;
+            color:#FFF;
+            font-size:13px;
+            margin-bottom:1px;
+            padding:13px;
+        }
 
-    }
-
-    #chat-message-input{
-        position: relative;
-        padding: 10px 20px;
-        background: #E5E5EA;
-        border-radius: 25px;
-        border: 1px solid grey;
-        width: 70%;
-        
-
-        
-        background: #fefefe;
-        
-    }
-    #chat-message-input:focus{
-        outline: none;
-    }
-
-    #chatMessages{
-        height:70vh; 
-        
-     
-        overflow-y: scroll;
-        border: 1px solid grey;
-        border-radius: 25px;
-        position: relative;
-        margin-bottom: 15px;
-
-    }
-    #chat-message-submit{
-        outline: none;
-        border: none;
-        margin-left: 10px;
-
-        font-family: 'Helvetica', sans-serif;
-        font-size: 12px;
-        font-weight: 400;
-        position: relative;
-        float: right;
-
-        padding: 10px;
-        background-color: #0076FF;
-        color: #fff;
-        border-radius: 25px;
-        cursor: pointer;
-    }
-    .myMessage{
-        word-wrap: break-word;
-        max-width: 30%;
-        float: right;
-        clear: both;
-        margin-right: 2%;
-        padding: 10px;
-        background-color: #0076FF;
-        font-family: 'Helvetica', sans-serif;
-        border-radius: 25px 25px 2px 25px;
-        color: white;
-        font-size: 13px;
-        margin-bottom: 1px;
-        
-    }
-    .otherMessage{
-        word-wrap: break-word;
-        max-width: 30%;
-        float: left;
-        clear: both;
-        margin-left: 2%;
-        padding: 10px;
-        background-color: #65737e;
-        font-family: 'Helvetica', sans-serif;
-        border-radius: 25px 25px 25px 6px;
-        color: white;
-        font-size: 13px;
-        margin-bottom: 1px;
-    }
+        .radioButtons {
+            background-color: #0076FF;
+            
+        }
 
 
     </style>
@@ -119,7 +132,14 @@
   
 
         <div id="chatArea" v-show="showChat">   
-            <h1> {{stripped}} chat room</h1>  
+            <h2> Class {{stripped}} | 
+                <span v-if="isInstructor"> You are the instructor.</span>
+                <span v-else-if="isAnonymous"> Chatting as anonymous to students.</span>
+                <span v-else> Chatting as {( username )}</span>
+                
+            
+            
+            </h2>  
             <div id="chatMessages">
                 <p v-for="message in messages" 
                 v-bind:class="{ 'myMessage': message.isMine, 'otherMessage': !message.isMine }">
@@ -134,9 +154,35 @@
             </div>
         </div>
         <div id="register" v-show="!showChat">
-                <input id="userName" type="text" size="25">
-                Instructor? <input id ="instructor" type="checkbox"> 
-                Anonymous?  <input id ="anonymous" type="checkbox">
+                <h2> Welcome to class {{stripped}}</h2>
+                <h3> What's your name?</h3>
+                <input class="registrationButton" 
+                id="userName" type="text" maxlength="20"
+                v-on:keyup.13="setUsername"> <br>
+                <h3> Other options:</h3>
+            
+                <h4>Instructor: <br>
+                    Can see all student names. <span><input id ="instructor" type="radio" name="register"></span> 
+                 </h4>
+
+                
+                <h4>Anonymous Student: <br>
+                Appear anonymous to other students, but not the instructor. 
+                <span><input id ="anonymous" type="radio" name="register"></span>
+                </h4>
+
+                <h4>Non-Anonymous Student: <br>
+                    Your name is visible to all.
+                    <span><input type="radio" name="register" checked></span>
+                    </h4>
+                <input id="submitRegistration" 
+                class="registrationButton"
+                type="button" value="Enter Chatroom"
+                v-on:click="setUsername">
+                    
+               
+                
+
         </div>
     </div>
     
@@ -146,10 +192,11 @@
     JAVASCRIPT
 -->
 <script>
+    var roomName = {{ room_name_json }}
 
     var chatLogic = new Vue({
         el: "#chat",
-        delimiters: ['{(', ')}'],         //avoid conflicts with django templating syntax          
+        delimiters: ['{(', ')}'],         //avoid conflicts with django template syntax          
 
         data: {
             placeholder: 1,
@@ -160,104 +207,108 @@
             username: "theres a problem",
             userID: -9999,
             instructorChannel: "notIt"
-
-
         },
 
         methods: {
             exMethod: () => {
                 console.log("asdf")
             },
+
             addMessage: (message) => {
                 chatLogic.messages.push(message)
             },
-            setUsername: (name, instructor, anonymous) => {
-                console.log("asdf")
+
+            setUsername: () => {
+                let username = document.getElementById("userName").value
+                let instructor = document.getElementById("instructor").checked
+                let anonymous = document.getElementById("anonymous").checked
                 chatLogic.isInstructor = instructor
-                chatLogic.username = name 
+                chatLogic.username = username 
                 chatLogic.isAnonymous = anonymous
                 chatLogic.showChat = true
                 let min = 0; 
-                let max = 9999999;  
+                let max = 99999999;  
                 chatLogic.userID = Math.floor(Math.random() * (+max - +min)) + +min; 
+                chatLogic.startWebSocket(instructor)
+            },
+
+            startWebSocket: instructor => {
+                var chatSocket = new WebSocket(
+                    'ws://' + window.location.host +
+                    '/ws/chat/' + roomName + '/');
+                    chatSocket.onopen = function (event) {
+                        if(instructor){
+                            chatSocket.send(JSON.stringify({
+                                'username': chatLogic.username,
+                                'message': "Hi, I'm the instructor.",
+                                'isAnonymous': chatLogic.isAnonymous,
+                                'isInstructor': chatLogic.isInstructor,
+                                'userID': chatLogic.userID,
+                            }));
+
+                        }
+                        document.querySelector('#chat-message-input').onkeyup = e => {
+                            if (e.keyCode === 13) {  // enter, return
+                                document.querySelector('#chat-message-submit').click();
+                            }
+                        };
+                
+                        document.querySelector('#chat-message-submit').onclick = e => {
+                            var messageInputDom = document.querySelector('#chat-message-input');
+                            var message = messageInputDom.value;
+                            chatSocket.send(JSON.stringify({
+                                'username': chatLogic.username,
+                                'message': message,
+                                'isAnonymous': chatLogic.isAnonymous,
+                                'isInstructor': chatLogic.isInstructor,
+                                'userID': chatLogic.userID,
+                                'instructorChannel': chatLogic.instructorChannel
+                            }));
+                            messageInputDom.value = '';
+                        };
+
+                    };
 
                 
-            }
-        }
+
+                chatSocket.onmessage = (e) => {
+                    var data = JSON.parse(e.data);
+
+                    let messageObject = {
+                        anonymous: data['anonymous'],
+                        username: data['username'] + ": ",
+                        message: data['message'],
+                        isMine: data['userID'] == chatLogic.userID,
+                    }
+
+                    if(messageObject.isMine){
+                        messageObject.username = ""
+                    }
+
+                    if(data.instructorChannel){
+                        chatLogic.instructorChannel = data.instructorChannel
+                    }
+
+                    if(data['forInstructor']){
+                        chatLogic.addMessage(messageObject)
+                    }
+                    else if(!chatLogic.isInstructor){
+                        chatLogic.addMessage(messageObject)
+                    }
+                    
+                };
+
+                chatSocket.onclose = e => {
+                    console.error('Chat socket closed unexpectedly');
+                };
+
+                document.querySelector('#chat-message-input').focus();
+                
+            }   
+        },
+        
 
     })
-
-
-
-
-    var roomName = {{ room_name_json }};
-    
-
-    var chatSocket = new WebSocket(
-        'ws://' + window.location.host +
-        '/ws/chat/' + roomName + '/');
-
-    var instructorChannel = document.getElementById("instructorChannel")
-
-	chatSocket.onmessage = (e) => {
-        var data = JSON.parse(e.data);
-        // console.log(data)
-        // var message = data['message'];
-        let messageObject = {
-            anonymous: data['anonymous'],
-            username: data['username'] + ": ",
-            message: data['message'],
-            isMine: data['userID'] == chatLogic.userID,
-        }
-        console.log("received  " + data['userID'])
-        console.log("current  " + chatLogic.userID)
-        if(messageObject.isMine){
-            messageObject.username = ""
-        }
-        if(data.instructorChannel){
-            chatLogic.instructorChannel = data.instructorChannel
-        }
-
-
-        
-        chatLogic.addMessage(messageObject)
-        
-    };
-
-    chatSocket.onclose = e => {
-        console.error('Chat socket closed unexpectedly');
-    };
-
-    document.querySelector('#chat-message-input').focus();
-    document.querySelector('#chat-message-input').onkeyup = e => {
-        if (e.keyCode === 13) {  // enter, return
-            document.querySelector('#chat-message-submit').click();
-        }
-    };
-    document.querySelector('#userName').onkeyup = e => {
-        if (e.keyCode === 13) {  // enter, return
-            var username = document.getElementById("userName").value
-            var instructor = document.getElementById("instructor").checked
-            var anonymous = document.getElementById("anonymous").checked
-            chatLogic.setUsername(username, instructor, anonymous)
-            // document.querySelector('#chat-message-submit').click();
-        }
-    };
-
-    document.querySelector('#chat-message-submit').onclick = e => {
-        var messageInputDom = document.querySelector('#chat-message-input');
-        var message = messageInputDom.value;
-
-        chatSocket.send(JSON.stringify({
-            'username': chatLogic.username,
-            'message': message,
-            'isAnonymous': chatLogic.isAnonymous,
-            'isInstructor': chatLogic.isInstructor,
-            'userID': chatLogic.userID,
-            'instructorChannel': chatLogic.instructorChannel
-        }));
-
-        messageInputDom.value = '';
-    };
+ 
 </script>
 </html>
