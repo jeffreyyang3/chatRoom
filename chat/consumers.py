@@ -5,10 +5,15 @@ from urllib.parse import quote
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+		
 		async def connect(self):
+				# adds client to channel layer group when the websocket initially connects
 				self.room_name = self.scope['url_route']['kwargs']['room_name']
+				
 
 				self.room_group_name = 'chat_%s' % self.room_name
+
+				
 
 				
 				await self.channel_layer.group_add(
@@ -42,8 +47,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
 				
 				# Send message to room group
-				instructorChannel = text_data_json.get("instructorChannel")
+				# Anonymous function works by cleaning the username out of the message sent 
+				# by student websocket, entire group will get the cleaned message sent through their
+				# channels, but only the instructor's channel will get the non anonymous message.
+
+
+				instructorChannel = text_data_json.get("instructorChannel") # get avoids keyError
 				if(instructorChannel and instructorChannel != "notIt"):
+					
+
 					await self.channel_layer.send(text_data_json.get("instructorChannel"), {
 						'type': 'chat_message',
 						'message': message,
@@ -51,7 +63,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 						'isAnonymous': isAnonymous,
 						'isInstructor': isInstructor,
 						'userID': userID,
-						'instructorChannel': text_data_json['instructorChannel'],
+						'instructorChannel': instructorChannel,
 						'forInstructor': True,
 						'invisible': invisible,
 					})
