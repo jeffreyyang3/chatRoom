@@ -27,8 +27,8 @@ accessible through a web browser at
 Open a tab/window for each client at that URL.
 There may still be installation issues, as I could only test this 
 on one other computer.  If there are any that
-you can't figure out, I can try to fix it, give a live demo, or find a workaround.  I can be contacted through email, or more
-quickly at 626-818-2618.
+you can't figure out, I can try my best to fix it, or give a live demo.
+I can be contacted through email, or more quickly at 626-818-2618.
 
 
 ## Overview
