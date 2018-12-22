@@ -40,7 +40,9 @@ With this application, one can create or join a chatroom.
 In the chatroom, one person can be the instructor, and the
 rest of the members are students.  The students have the choice of being anonymous to each other, or having their names be visible to each other.  However, the instructor can always see all students' names, even if they are anonymous to each other.   
 
-Each participant in the chatroom opens a WebSocket, used to 
+Each participant in the chatroom opens a WebSocket, used to exchange JSON encoded data with the server.
+The server handles the appropriate message forwarding and the functionality for anonymity.
+Data is parsed and displayed on the front end with Vue.js.
 
 ## Issues/Potential Issues
 
