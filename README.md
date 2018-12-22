@@ -58,13 +58,17 @@ the chat room, there's a very small possibility, especially with slow connection
 
  - If JS is disabled, or Vue doesn't load, nothing will work.
 
+
+
 ## Thoughts
 
 This was my first time having to write actual back end functionality instead of  letting a framework abstract everything away.  Thus, I found it extra challenging to work with Django on an interactive web application of this nature. 
 
  Most of the functionality for this application was done with client-side JS because I didn't know how to get Django to do what I wanted. But I ended up liking the front end more than I thought I would. It was a pleasure to work with Vue, and I also enjoyed styling the chatroom.
 
-If I were to do this project or something similar again, I would try to have the back end handle more of the logic. My reliance on client-side JS for functionality necessitated unintuitive workarounds like having the instructor constantly send invisible messages to the group. Also, in many other real world use cases, that reliance could be unsafe.
+If I were to do this project or something similar again, I would try to have the back end handle more of the logic. My reliance on client-side JS for functionality necessitated unintuitive workarounds like having the instructor constantly send invisible messages to the group. Also, in many other real world use cases, that reliance could be unsafe. This also made it very difficult
+to run tests. I tried a few in tests.py, but I didn't know how to test anything meaningful since things like URL validation
+were handled client side.
 
 Overall, I really enjoyed working on this project. It was an awesome learning experience. 
 

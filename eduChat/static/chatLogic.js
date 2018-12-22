@@ -48,8 +48,7 @@ var chatLogic = new Vue({
             chatLogic.chatSocket = new WebSocket(             
                 'ws://' + window.location.host +
                 '/ws/chat/' + roomName + '/');    
-                //          regex that removes spaces  ^^, could probably find a better pattern
-                                                            // that works with other bad chars
+
                 chatLogic.chatSocket.onopen = instructor => {   /* make sure messages can only be sent when
                                                                 websocket has connected */ 
                     if(instructor){                             // ROW ECHELON FORM 
