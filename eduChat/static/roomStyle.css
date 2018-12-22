@@ -1,0 +1,106 @@
+html,body {
+    height:100%;
+    font-family:Helvetica, sans-serif;
+}
+
+#chat {
+    height:90%;
+    width:90%;
+}
+
+#chatInput {
+    width:100%;
+    font-size: 13px;
+}
+
+#enterName {
+    float:left;
+    clear:both;
+}
+
+#chat-message-input {
+    position:relative;
+    border-radius:25px;
+    border:1px solid grey;
+    width:70%;
+    background:#fefefe;
+    padding:10px 20px;
+}
+
+#chat-message-input:focus {
+    outline:none;
+}
+
+
+#chatMessages {
+    height:70vh;
+    overflow-y:scroll;
+    border:1px solid grey;
+    border-radius:25px;
+    position:relative;
+    margin-bottom:15px;
+}
+
+#chat-message-submit {
+    outline:none;
+    border:none;
+    margin-left:10px;
+    font-family:Helvetica, sans-serif;
+    font-size:12px;
+    font-weight:400;
+    position:relative;
+    float:right;
+    background-color:#0076FF;
+    color:#fff;
+    border-radius:25px;
+    cursor:pointer;
+    padding:10px;
+}
+.registrationButton{
+    border-radius:25px;
+    border:1px solid grey;
+
+    background:#fefefe;
+    padding:10px 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+.registrationButton:focus {
+    outline:none;
+}
+
+
+
+.myMessage {
+    word-wrap:break-word;
+    max-width:30%;
+    float:right;
+    clear:both;
+    margin-right:2%;
+    background-color:#0076FF;
+    font-family:Helvetica, sans-serif;
+    border-radius:25px 25px 2px 25px;
+    color:#FFF;
+    font-size:13px;
+    margin-bottom:1px;
+    padding:13px;
+}
+
+.otherMessage {
+    word-wrap:break-word;
+    max-width:30%;
+    float:left;
+    clear:both;
+    margin-left:2%;
+    background-color:#65737e;
+    font-family:Helvetica, sans-serif;
+    border-radius:25px 25px 25px 6px;
+    color:#FFF;
+    font-size:13px;
+    margin-bottom:1px;
+    padding:13px;
+}
+
+.radioButtons {
+    background-color: #0076FF;
+}
