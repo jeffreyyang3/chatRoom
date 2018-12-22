@@ -16,7 +16,7 @@ From the chatRoom directory, virtualenv can be run with
 
 It may also be necessary to run 
 
-**pip3 install -r requirements.txt **
+**pip3 install -r requirements.txt**
 
 After that, the app should be ready to run with
 **python3 manage.py runserver**
