@@ -41,19 +41,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				isInstructor = text_data_json['isInstructor']
 				invisible = text_data_json['invisible']
 
-				if isInstructor:
+				# the first time a student receives a message from instructor, 
+				# it will set the channel to send the non-anonymous messages to.
+				# instructor sends out an invisible message on a very short interval
+				# so that the channel setting isnt dependent on the actual instructor 
+				# typing a message.
+
+				if isInstructor:	
 					text_data_json['instructorChannel'] = self.channel_name
+					
+
+				
 				
 
 				
 				# Send message to room group
-				# Anonymous function works by cleaning the username out of the message sent 
+				# Anonymity preserved by cleaning the username out of the message sent 
 				# by student websocket, entire group will get the cleaned message sent through their
 				# channels, but only the instructor's channel will get the non anonymous message.
 
 
-				instructorChannel = text_data_json.get("instructorChannel") # get avoids keyError
-				if(instructorChannel and instructorChannel != "notIt"):
+				instructorChannel = text_data_json.get("instructorChannel") # .get avoids keyError if nonexistent
+				if(instructorChannel and instructorChannel != "notIt"): 
 					
 
 					await self.channel_layer.send(text_data_json.get("instructorChannel"), {
@@ -71,7 +80,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				if(isAnonymous):
 					username = "Anonymous"
 				
-				await self.channel_layer.group_send(
+				await self.channel_layer.group_send(	# broadcasting message to all in the chatroom
 						self.room_group_name,{
 							'type': 'chat_message',
 							'message': message,
@@ -86,7 +95,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 				
 
 				
-		async def chat_message(self, event):
+		async def chat_message(self, event):			# logic for sending the chat_message data
 				message = event['message']
 				username = event['username']
 				isAnonymous = event['isAnonymous']
