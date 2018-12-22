@@ -155,7 +155,7 @@
             </div>
         </div>
         <div id="register" v-show="!showChat">
-                <h2> Welcome to class {{strippedName}}</h2>
+                <h2> Welcome to chatroom {{strippedName}}</h2>
                 <h3> What's your name?</h3>
                 <input class="registrationButton" 
                 id="userName" type="text" maxlength="20"
@@ -240,14 +240,13 @@
             startWebSocket: instructor => {     
                 roomName = roomName.replace(/\W/g, '')   
                 if(roomName == ""){
-                    let min = 0; 
-                    let max = 99999999;  
-                    roomName = Math.floor(Math.random() * (+max - +min)) + +min;  
+                    roomName = Math.floor(Math.random() * 9999999)
+                    roomName = roomName.toString()
                 }
     
                 chatLogic.chatSocket = new WebSocket(             
                     'ws://' + window.location.host +
-                    '/ws/chat/' + roomName.replace(/\W/g, '') + '/');    
+                    '/ws/chat/' + roomName + '/');    
                     //          regex that removes spaces  ^^, could probably find a better pattern
                                                                 // that works with other bad chars
                     chatLogic.chatSocket.onopen = instructor => {   /* make sure messages can only be sent when
@@ -275,13 +274,13 @@
                 
             }, /// End startWebSocket method
             addListeners: () => {
-                        document.querySelector('#chat-message-input').onkeyup = e => {
-                            if (e.keyCode === 13) {  // enter, return
+                        document.querySelector('#chat-message-input').onkeyup = event => {
+                            if (event.keyCode === 13) {  // enter, return
                                 document.querySelector('#chat-message-submit').click();
                             }
                         };
                 
-                        document.querySelector('#chat-message-submit').onclick = e => {
+                        document.querySelector('#chat-message-submit').onclick = event => {
                             var messageInputDom = document.querySelector('#chat-message-input');
                             var message = messageInputDom.value;
                             /* 

@@ -8,8 +8,8 @@ def index(request):
     return render(request, 'chat/index.html', {})
 
 def room(request, roomName):
-    url = html.escape(json.dumps(roomName))
-    print(mark_safe(url))
+    
+
 
     return render(request, 'chat/room.html', {
         'room_name_json': mark_safe(json.dumps(roomName)),
