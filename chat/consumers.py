@@ -58,7 +58,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 		if(instructorChannel and instructorChannel != "notIt"): 
 			
 
-			await self.channel_layer.send(text_data_json.get("instructorChannel"), {
+			await self.channel_layer.send(instructorChannel, {
 				'type': 'chat_message',
 				'message': message,
 				'username': username,
@@ -81,7 +81,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 					'isAnonymous': isAnonymous,
 					'isInstructor': isInstructor,
 					'userID': userID,
-					'instructorChannel': text_data_json.get("instructorChannel"),
+					'instructorChannel': instructorChannel,
 					'forInstructor': False,
 					'invisible': invisible
 				})

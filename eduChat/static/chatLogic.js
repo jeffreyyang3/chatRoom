@@ -39,11 +39,11 @@ var chatLogic = new Vue({
         
 
         startWebSocket: instructor => {     
-            roomName = roomName.replace(/\W/g, '')   
-            if(roomName == ""){
+            roomName = roomName.replace(/\W/g, '') //regex makes sure string is alphanumeric because   
+            if(roomName == ""){			   // non alphanumeric doesnt work with Channels
                 roomName = Math.floor(Math.random() * 9999999)
                 roomName = roomName.toString()
-            }
+            }					  // generate a name if the original had no valid characters
 
             chatLogic.chatSocket = new WebSocket(             
                 'ws://' + window.location.host +
@@ -116,10 +116,7 @@ var chatLogic = new Vue({
                     forInstructor: data['forInstructor'],
                 }
 
-                if(data['message'] == "XXX"){
-                    console.log(data)
-                }
-
+         
                 if(messageObject.isMine){
                     messageObject.username = ""
                 }
@@ -128,8 +125,6 @@ var chatLogic = new Vue({
                     chatLogic.instructorChannel = data.instructorChannel
                 }
                 chatLogic.addMessage(messageObject)
-
-                
           
             };
 
