@@ -8,6 +8,8 @@ I used Docker to start a Redis server, with the command
 
 **docker run -p 6379:6379 -d redis:2.8**
 
+Docker and Redis should be installed.
+
 I also tried to avoid installation and dependency issues by using virtualenv and a requirements.txt.
 
 From the chatRoom directory, virtualenv can be run with 
@@ -24,7 +26,7 @@ After that, the app should be ready to run with
 accessible through a web browser at 
 **http://localhost:8000/**
 
-Open a tab/window for each client at that URL.
+Open a tab/window for each participant at that URL.
 There may still be installation issues, as I could only test this 
 on one other computer.  If there are any that
 you can't figure out, I can try my best to fix it, or give a live demo.
